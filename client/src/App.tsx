@@ -20,7 +20,8 @@ export default function App() {
             overflow-hidden">
             <Actions setOpen={setOpen} setMode={setMode}/>
             <UserTable setOpen={setOpen} setMode={setMode} setUser={setUser}/>
-            <UserBar open={open} setOpen={setOpen} mode={mode} user={user} setUser={setUser} />
+            <UserBar open={open} setOpen={setOpen} mode={mode} user={user} setUser={setUser} 
+                setMode={setMode}/>
         </div>
     );
 }

@@ -9,9 +9,10 @@ type EditUserProps = {
     mode: Mode;
     user: User;
     setUser: Dispatch<SetStateAction<User>>;
+    setMode: Dispatch<SetStateAction<Mode>>;
 };
 
-export default function UserBar({ open, setOpen, mode, user, setUser } : EditUserProps) {
+export default function UserBar({ open, setOpen, mode, user, setUser, setMode } : EditUserProps) {
     const handleSetUserState = (key: string, value: any): void => {
         setUser(user => {
             return { ...user, [key]: value};
@@ -47,7 +48,7 @@ export default function UserBar({ open, setOpen, mode, user, setUser } : EditUse
                                 <p>{user.name}</p>
                             ) : (
                                 <input className="w-full rounded-md border-slate-300 border-2 p-1 
-                                    mt-1" type="text" id="name" 
+                                    mt-1" type="text" id="name" value={user.name}
                                     onChange={e => handleSetUserState("name", e.target.value)} />
                             )}
 
@@ -58,7 +59,7 @@ export default function UserBar({ open, setOpen, mode, user, setUser } : EditUse
                                 <p>{user.role}</p>
                             ) : (
                                 <select className="w-full rounded-md border-slate-300 border-2 p-1 
-                                    mt-1" name="role" id="role"
+                                    mt-1" name="role" id="role" value={user.role}
                                     onChange={e => handleSetUserState("name", e.target.value)}>
                                         {roles.map(role => (
                                             <option value={role}>{role}</option>
@@ -72,7 +73,7 @@ export default function UserBar({ open, setOpen, mode, user, setUser } : EditUse
                                 <p>{user.email}</p>
                             ) : (
                                 <input className="w-full rounded-md border-slate-300 border-2 p-1 
-                                    mt-1" type="email" id="email"
+                                    mt-1" type="email" id="email" value={user.email}
                                     onChange={e => handleSetUserState("name", e.target.value)}/>
                             )}                            
                             
@@ -83,24 +84,42 @@ export default function UserBar({ open, setOpen, mode, user, setUser } : EditUse
                                 <p>{user.status}</p>
                             ) : (
                                 <select className="w-full rounded-md border-slate-300 border-2 p-1 
-                                    mt-1" name="status" id="status"
+                                    mt-1" name="status" id="status" value={user.status}
                                     onChange={e => handleSetUserState("name", e.target.value)}>
                                         {statuses.map(status => (
                                             <option value={status}>{status}</option>
                                         ))}
                                 </select>
                             )}
-                            
 
-                            {/* SUBMIT BUTTON */}
-                            {mode != "VIEW" && (
-                                <div className="w-full flex justify-center items-center mt-8">
-                                    <button className="bg-sky-600 rounded-md px-8 py-2 text-lg 
+                            {/* ACTIONS */}
+                            <div className="flex justify-center items-center w-full space-x-4 mt-8">
+                                {/* SUBMIT/SAVE BUTTON */}
+                                {mode != "VIEW" && (
+                                    <button className="bg-sky-600 rounded-md px-8 py-2
                                         text-white font-bold cursor-pointer">
-                                        SUBMIT
+                                        {mode == "EDIT" ? "SAVE" : "SUBMIT"}
                                     </button>
-                                </div>
-                            )}
+                                )}
+
+                                {/* EDIT BUTTON */}
+                                {mode == "VIEW" && (
+                                    <button className="bg-sky-600 rounded-md px-8 py-2 
+                                        text-white font-bold cursor-pointer"
+                                        onClick={() => setMode("EDIT")}>
+                                        Edit User
+                                    </button>
+                                )}
+
+                                {/* DELETE BUTTON */}
+                                {mode == "VIEW" && (
+                                    <button className="bg-red-500 rounded-md px-8 py-2 
+                                        text-white font-bold cursor-pointer">
+                                        Delete User
+                                    </button>
+                                )}
+                            </div>
+                            
                     </div>
                 </div>
         </section>
