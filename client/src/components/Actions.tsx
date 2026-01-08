@@ -1,20 +1,23 @@
-import { SetStateAction, Dispatch, useState } from 'react';
+import { useState } from 'react';
 import { FaPlus } from 'react-icons/fa'
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { IoFilter } from "react-icons/io5";
-import { Mode } from '../types';
+import { useAppContext } from './AppContext';
 
-type ActionsProps = {
-    setOpen: Dispatch<SetStateAction<boolean>>;
-    setMode: Dispatch<SetStateAction<Mode>>;
-};
-
-export default function Actions({ setOpen, setMode }: ActionsProps) {
+export default function Actions() {
+    const { setOpen, setMode, setUser } = useAppContext();
     const [searchText, setSearchText] = useState<string>("");
 
     const handleClickAddUser = () => {
         setOpen(true);
         setMode("ADD");
+        setUser({
+            name: "",
+            role: "Software Engineer",
+            status: "ACTIVE",
+            email: "",
+            deleted_at: ""
+        })
     };
 
     return (

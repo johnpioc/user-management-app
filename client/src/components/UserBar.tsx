@@ -1,23 +1,44 @@
-import { SetStateAction, Dispatch } from "react";
-import { Mode, User } from "../types";
 import { roles, statuses } from "../constants";
 import { FaAngleRight } from "react-icons/fa";
+import { createUser, deleteUser } from "../api/api";
+import { useAppContext } from "./AppContext";
+import { User } from "../types";
 
-type EditUserProps = {
-    open: boolean;
-    setOpen: Dispatch<SetStateAction<boolean>>;
-    mode: Mode;
-    user: User;
-    setUser: Dispatch<SetStateAction<User>>;
-    setMode: Dispatch<SetStateAction<Mode>>;
-};
+const EPOCH_ISO = "1970-01-01T00:00:00.000Z";
 
-export default function UserBar({ open, setOpen, mode, user, setUser, setMode } : EditUserProps) {
+export default function UserBar() {
+    const { setUser, setMode, user, setOpen, open, mode, setUsers, users } = useAppContext();
+
     const handleSetUserState = (key: string, value: any): void => {
         setUser(user => {
             return { ...user, [key]: value};
         })
     };
+
+    const handleAddUser = async (): Promise<void> => {
+        const addedUser: User = await createUser({
+            name: user.name,
+            status: user.status,
+            role: user.role,
+            email: user.email,
+            deleted_at: EPOCH_ISO
+        });
+
+        setUser(addedUser);
+        const newUsers: User[] = users;
+        newUsers.push(addedUser);
+        setUsers(newUsers);
+
+        setMode("VIEW");
+    }
+
+    const handleDeleteUser = async (id: number): Promise<void> => {
+        await deleteUser(id);
+        const stringId = id.toString();
+        const updatedUsers: User[] = users.filter((user: User) => user.id != stringId);
+        setUsers(updatedUsers);
+        setOpen(false);
+    }
 
     return (
         <section className={`h-screen w-screen transition-all ease-in-out duration-400 absolute
@@ -60,7 +81,7 @@ export default function UserBar({ open, setOpen, mode, user, setUser, setMode } 
                             ) : (
                                 <select className="w-full rounded-md border-slate-300 border-2 p-1 
                                     mt-1" name="role" id="role" value={user.role}
-                                    onChange={e => handleSetUserState("name", e.target.value)}>
+                                    onChange={e => handleSetUserState("role", e.target.value)}>
                                         {roles.map(role => (
                                             <option value={role}>{role}</option>
                                         ))}
@@ -74,7 +95,7 @@ export default function UserBar({ open, setOpen, mode, user, setUser, setMode } 
                             ) : (
                                 <input className="w-full rounded-md border-slate-300 border-2 p-1 
                                     mt-1" type="email" id="email" value={user.email}
-                                    onChange={e => handleSetUserState("name", e.target.value)}/>
+                                    onChange={e => handleSetUserState("email", e.target.value)}/>
                             )}                            
                             
 
@@ -85,7 +106,7 @@ export default function UserBar({ open, setOpen, mode, user, setUser, setMode } 
                             ) : (
                                 <select className="w-full rounded-md border-slate-300 border-2 p-1 
                                     mt-1" name="status" id="status" value={user.status}
-                                    onChange={e => handleSetUserState("name", e.target.value)}>
+                                    onChange={e => handleSetUserState("status", e.target.value)}>
                                         {statuses.map(status => (
                                             <option value={status}>{status}</option>
                                         ))}
@@ -97,7 +118,8 @@ export default function UserBar({ open, setOpen, mode, user, setUser, setMode } 
                                 {/* SUBMIT/SAVE BUTTON */}
                                 {mode != "VIEW" && (
                                     <button className="bg-sky-600 rounded-md px-8 py-2
-                                        text-white font-bold cursor-pointer">
+                                        text-white font-bold cursor-pointer"
+                                        onClick={() => handleAddUser()}>
                                         {mode == "EDIT" ? "SAVE" : "SUBMIT"}
                                     </button>
                                 )}
@@ -114,7 +136,8 @@ export default function UserBar({ open, setOpen, mode, user, setUser, setMode } 
                                 {/* DELETE BUTTON */}
                                 {mode == "VIEW" && (
                                     <button className="bg-red-500 rounded-md px-8 py-2 
-                                        text-white font-bold cursor-pointer">
+                                        text-white font-bold cursor-pointer"
+                                        onClick={() => handleDeleteUser(user.id)}>
                                         Delete User
                                     </button>
                                 )}

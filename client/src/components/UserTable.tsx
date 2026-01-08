@@ -1,51 +1,27 @@
-import { Mode, User } from "../types";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { getUsers } from "../api/api";
+import { User } from "../types";
+import { useState, useEffect } from "react";
+import { useAppContext } from "./AppContext";
 
-const userData: User[] = [
-    {
-        name: "John",
-        email: "john@email.com",
-        role: "Software Engineer",
-        status: "ACTIVE"
-    },
-    {
-        name: "Annie",
-        email: "annie@email.com",
-        role: "Product Owner",
-        status: "INACTIVE"
-    },
-    {
-        name: "Kana",
-        email: "kana@email.com",
-        role: "Project Manager",
-        status: "SUSPENDED"
-    },
-    {
-        name: "Gina",
-        email: "gina@email.com",
-        role: "Scrum Master",
-        status: "ACTIVE"
-    }
-]
-
-type UserTableProps = {
-    setOpen: Dispatch<SetStateAction<boolean>>;
-    setMode: Dispatch<SetStateAction<Mode>>;
-    setUser: Dispatch<SetStateAction<User>>;
-};
-
-export default function UserTable({ setOpen, setMode, setUser }: UserTableProps) {
-    const [users, setUsers] = useState<User[]>([]);
+export default function UserTable() {
+    const { setOpen, setMode, setUser, users, setUsers, pageIndex } = useAppContext();
 
     const handleSelectUser = (user: User): void => {
         setOpen(true);
         setMode("VIEW");
         setUser(user)
     }
+    
+    const getPaginatedUsers = (): User[] => {
+        const bottom: number = pageIndex * 10;
+        const top: number = Math.min(users.length, pageIndex * 10 + 10);
+        return users.slice(bottom, top);
+    }
 
     useEffect(() => {
-        const fetchUsers = () => {
-            setUsers(userData);
+        const fetchUsers = async (): Promise<void> => {
+            const usersData: User[] = await getUsers();
+            setUsers(usersData);
         }
 
         fetchUsers();
@@ -63,8 +39,8 @@ export default function UserTable({ setOpen, setMode, setUser }: UserTableProps)
                 </div>
 
                 {/* USERS */}
-                {users.map((user, index) => (
-                    <div className={`grid grid-cols-4 text-black text-md p-2
+                {getPaginatedUsers().map((user, index) => (
+                    <div key={index} className={`grid grid-cols-4 text-black text-md p-2
                         ${index % 2 == 1 ? 'bg-slate-100' : 'bg-white-200'} cursor-pointer`}
                         onClick={() => handleSelectUser(user)}>
                         <p>{user.name}</p>
