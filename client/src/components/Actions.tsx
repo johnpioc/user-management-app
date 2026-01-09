@@ -60,10 +60,13 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
     }
 
     return (
-        <section className="w-4xl flex justify-between items-center text-lg mb-4">
-            <div className="flex items-center justify-center space-x-4">
+        <section className="w-full lg:w-4xl flex flex-col lg:flex-row space-y-4 lg:space-y-0
+            justify-between items-center text-lg mb-4">
+            <div className="flex flex-col lg:flex-row items-center justify-center lg:space-x-4 
+                space-y-4 lg:space-y-0 w-full lg:justify-start">
                 {/* SEARCH BAR */}
-                <div className="w-96 rounded-full flex space-x-2 items-center border-2 bg-white
+                <div className="w-full lg:w-96 rounded-full flex space-x-2 
+                    items-center border-2 bg-white text
                     border-slate-400 p-2 shadow-xl relative z-2">
                         <FaMagnifyingGlass className="text-slate-400"/>
                         <input type="text" className="w-full focus:outline-none focus:ring-0" 
@@ -77,20 +80,23 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
                 </div>
 
                 {/* FILTER BUTTON */}
-                <button className={`p-2 shadow-xl rounded-full border-2 
-                    border-slate-400 cursor-pointer relative z-2
+                <button className={`lg:p-2 p-0 shadow-xl rounded-full border-2 flex justify-center 
+                    items-center space-x-4 lg:space-x-0
+                    border-slate-400 cursor-pointer relative z-2 w-full lg:w-auto
                     ${!isEmptyFilter(filter) ? "bg-sky-600 text-white" : "bg-white"}`}
                     onClick={() => setFilterBarOpen(true)}>
-                    <IoFilter className="text-3xl" />
+                    <IoFilter className="text-xl lg:text-3xl" />
+                    <p className="lg:hidden block text-xl">Filters</p>
                 </button>
             </div>
 
             {/* ADD USER BUTTON */}
-            <button className="rounded-full flex justify-center items-center space-x-2 bg-sky-600
-                text-white px-4 py-1 cursor-pointer relative z-2 shadow-xl" 
+            <button className="rounded-full flex justify-center items-center space-x-2
+                bg-sky-600 lg:space-x-2
+                text-white px-4 py-1 cursor-pointer relative z-2 shadow-xl lg:w-auto w-full" 
                 onClick={() => handleClickAddUser()}>
                 <FaPlus />
-                <p>Add User</p>
+                <p className="w-[8ch]">Add User</p>
             </button>
         </section>
     );

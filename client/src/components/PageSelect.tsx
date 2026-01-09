@@ -50,7 +50,8 @@ export default function PageSelect() {
     }, [users])
 
     return (
-        <section className="relative z-2 w-4xl mt-6 flex justify-end items-center space-x-6">
+        <section className="relative z-2 w-full lg:w-4xl mt-6 flex justify-end 
+            items-center space-x-6">
             {/** Items Counter */} 
             <p>{bottom + 1}-{top} of {userCount}</p>
 

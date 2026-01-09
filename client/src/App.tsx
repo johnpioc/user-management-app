@@ -15,8 +15,8 @@ export default function App() {
     const [filterBarOpen, setFilterBarOpen] = useState<boolean>(false);
 
     return (
-        <div className="bg-slate-100 h-screen w-screen flex flex-col justify-center items-center
-            overflow-hidden">
+        <div className="bg-slate-100 min-h-screen w-screen flex flex-col justify-center items-center
+            overflow-hidden py-24 px-4 lg:px-0">
             <Actions setFilterBarOpen={setFilterBarOpen} setUserBarOpen={setUserBarOpen}/>
             <UserTable setUserBarOpen={setUserBarOpen} />
             <PageSelect />

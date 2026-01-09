@@ -1,5 +1,5 @@
 import { roles, statuses } from "../constants";
-import { FaAngleRight } from "react-icons/fa";
+import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 import { createUser, deleteUser, updateUser } from "../api/api";
 import { useAppContext } from "./AppContext";
 import { User, Response } from "../types";
@@ -117,22 +117,29 @@ export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) 
     }
 
     return (
-        <section className={`h-screen w-screen transition-all ease-in-out duration-400 absolute
+        <section className={`h-screen w-screen transition-all ease-in-out duration-400 fixed
             top-0 left-0
             ${userBarOpen ? 'bg-[rgba(0,0,0,0.4)] z-3' : 'bg-none z-1'}`}>
-                <div className={`w-xl h-screen transition-all ease-in-out duration-400 absolute 
-                    z-4 top-0 ${userBarOpen ? "right-0" : "-right-152"} flex`}>
+                <div className={`w-full 
+                    lg:w-xl h-full transition-all ease-in-out duration-400 absolute 
+                    z-4 ${userBarOpen ? "bottom-0 lg:right-0" : 
+                        "right-0 lg:-right-152 lg:bottom-0 -bottom-[80vh]"} 
+                        flex flex-col lg:flex-row justify-end items-center`}>
                     {/* EXIT BUTTON */}
-                    <div className="h-full w-8 flex justify-center items-center">
-                            <button className={`bg-sky-600 w-full h-40 text-white text-4xl 
-                                rounded-tl-xl rounded-bl-xl cursor-pointer`} 
+                    <div className="h-8 lg:h-full w-64 lg:w-8 flex justify-center   
+                        items-center">
+                            <button className={`bg-sky-600 w-full h-full lg:h-40 text-white 
+                                text-4xl flex justify-center items-center
+                                rounded-tl-xl rounded-tr-xl lg:rounded-tr-none lg:rounded-bl-xl 
+                                cursor-pointer`} 
                                 onClick={() => { setErrorMsg(""); setUserBarOpen(false) }}>
-                                <FaAngleRight />
+                                <FaAngleRight className="hidden lg:block" />
+                                <FaAngleDown className="block lg:hidden" />
                             </button>
                     </div>
 
                     <div className="flex flex-col justify-start items-start text-black bg-white
-                        h-full w-xl p-4 text-lg">
+                        h-[70vh] lg:h-full w-full lg:w-xl p-4 text-lg">
                             {/* TITLE */}
                             <h2 className="text-2xl text-sky-600 font-bold">
                                 {mode} USER
@@ -159,7 +166,7 @@ export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) 
                                     mt-1" name="role" id="role" value={user.role}
                                     onChange={e => handleSetUserState("role", e.target.value)}>
                                         {roles.map(role => (
-                                            <option value={role}>{role}</option>
+                                            <option key={role} value={role}>{role}</option>
                                         ))}
                                 </select>
                             )}

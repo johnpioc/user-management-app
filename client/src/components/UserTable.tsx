@@ -29,25 +29,27 @@ export default function UserTable({ setUserBarOpen }: UserTableProps) {
     }, [filter]);
 
     return (
-        <section className="w-4xl rounded-lg overflow-hidden shadow-xl bg-white relative z-2">
+        <section className="w-full lg:w-4xl rounded-lg overflow-hidden shadow-xl 
+            bg-white relative z-2">
                 {/* TABLE HEADERS */}
-                <div className="grid grid-cols-4 text-white font-bold text-lg
+                <div className="grid lg:grid-cols-4 grid-cols-2 text-white font-bold text-lg
                     bg-sky-600 p-2">
                     <p>Name</p>
                     <p>Role</p>
-                    <p>Email</p>
-                    <p>Status</p>
+                    <p className="lg:block hidden">Email</p>
+                    <p className="lg:block hidden">Status</p>
                 </div>
 
                 {/* USERS */}
                 {users.map((user, index) => (
-                    <div key={index} className={`grid grid-cols-4 text-black text-md p-2
+                    <div key={index} className={`grid lg:grid-cols-4 grid-cols-2 
+                        text-black text-md p-2
                         ${index % 2 == 1 ? 'bg-slate-100' : 'bg-white-200'} cursor-pointer`}
                         onClick={() => handleSelectUser(user)}>
                         <p>{user.name}</p>
                         <p>{user.role}</p>
-                        <p>{user.email}</p>
-                        <p>{user.status}</p>
+                        <p className="lg:block hidden">{user.email}</p>
+                        <p className="lg:block hidden">{user.status}</p>
                     </div>
                 ))}
         </section>
