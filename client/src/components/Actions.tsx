@@ -23,7 +23,7 @@ const isEmptyFilter = (filter: Filter): boolean => {
 }
 
 export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsProps) {
-    const { setMode, setUser, filter } = useAppContext();
+    const { setMode, setUser, filter, setFilter } = useAppContext();
     const [searchText, setSearchText] = useState<string>("");
 
     const handleClickAddUser = () => {
@@ -38,6 +38,14 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
         })
     };
 
+    const handlePressEnter = (e) => {
+        if (e.key == "Enter") {
+            setFilter(filter => {
+                return { ...filter, nameContainsChars: searchText }
+            });
+        }
+    }
+
     return (
         <section className="w-4xl flex justify-between items-center text-lg mb-4">
             <div className="flex items-center justify-center space-x-4">
@@ -46,8 +54,13 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
                     border-slate-400 p-2 shadow-xl relative z-2">
                         <FaMagnifyingGlass className="text-slate-400"/>
                         <input type="text" className="w-full focus:outline-none focus:ring-0" 
-                        placeholder="Search for a user..." 
+                        placeholder="Search for a user..." onKeyDown={e => handlePressEnter(e)}
                         value={searchText} onChange={e => setSearchText(e.target.value)}/>
+                        <button className={`bg-sky-600 overflow-hidden rounded-md text-sm
+                            text-white ${searchText != filter.nameContainsChars ? 'w-20' : 
+                            'w-0'} transition-all duration-200 ease-in-out text-center`}>
+                                Apply
+                        </button>
                 </div>
 
                 {/* FILTER BUTTON */}

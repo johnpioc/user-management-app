@@ -26,5 +26,6 @@ export type Filter = {
     endDate: string,
     status: Status,
     pageLimit: number,
-    pageNumber: number
+    pageNumber: number,
+    nameContainsChars: string
 }

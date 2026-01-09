@@ -39,6 +39,9 @@ export class UserService {
         },
         name: {
           contains: filterDto.nameContainsChars == "" ? undefined : filterDto.nameContainsChars
+        },
+        deleted_at: {
+          equals: new Date(0)
         }
       },
       orderBy: {
@@ -62,6 +65,9 @@ export class UserService {
         },
         name: {
           contains: filterDto.nameContainsChars == "" ? undefined : filterDto.nameContainsChars
+        },
+        deleted_at: {
+          equals: new Date(0)
         }
       },  
     });
@@ -83,8 +89,11 @@ export class UserService {
   }
 
   remove(id: number) {
-    return this.databaseService.user.delete({
-      where: { id, }
+    return this.databaseService.user.update({
+      where: { id, },
+      data: {
+        deleted_at: new Date()
+      }
     })
   }
 }

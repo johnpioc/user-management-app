@@ -11,8 +11,6 @@ export const getUsers = async (filter: Filter): Promise<Response<User[]>> => {
             data: filter
         });
 
-        console.log(res.data);
-
         return { errorMsg: "", data: res.data };
     } catch (e) {
         return { errorMsg: "Unable to process users, please try again later", data: [] };

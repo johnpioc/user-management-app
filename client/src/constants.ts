@@ -24,6 +24,7 @@ export const getEmptyFilter = (): Filter => {
         endDate: tomorrow.toISOString().split('T')[0],
         status: "NONE",
         pageNumber: 1,
-        pageLimit: 10
+        pageLimit: 10,
+        nameContainsChars: ""
     }
 };
