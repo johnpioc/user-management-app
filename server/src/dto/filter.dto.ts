@@ -18,4 +18,7 @@ export default class FilterDTO {
 
     @IsString()
     status: string
+
+    @IsString()
+    nameContainsChars: string
 }

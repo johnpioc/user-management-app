@@ -36,6 +36,9 @@ export class UserService {
         },
         status: {
           equals: getStatus(filterDto.status)
+        },
+        name: {
+          contains: filterDto.nameContainsChars == "" ? undefined : filterDto.nameContainsChars
         }
       },
       orderBy: {
@@ -45,7 +48,6 @@ export class UserService {
   }
 
   async count(filterDto: FilterDTO) {
-    console.log(filterDto)
     const startDate: Date = new Date(filterDto.startDate);
     const endDate: Date = new Date(filterDto.endDate);
 
@@ -57,6 +59,9 @@ export class UserService {
         },
         status: {
           equals: getStatus(filterDto.status)
+        },
+        name: {
+          contains: filterDto.nameContainsChars == "" ? undefined : filterDto.nameContainsChars
         }
       },  
     });
