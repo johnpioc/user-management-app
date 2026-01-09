@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -21,12 +20,12 @@ enum Status {
 }
 
 model User {
-  id Int @default(autoincrement()) @id
-  name String 
-  email String @unique 
-  role String 
-  status Status
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  deleted_at DateTime
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String    @unique
+  role       String
+  status     Status
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
 }

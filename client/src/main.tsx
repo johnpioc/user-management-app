@@ -1,10 +1,11 @@
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { AppProvider } from './components/AppContext.tsx'
+import ReactDOM from "react-dom/client";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+import App from "./App.tsx";
+import "./index.css";
+import { AppProvider } from "./components/AppContext.tsx";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <AppProvider>
     <App />
   </AppProvider>
-)
+);

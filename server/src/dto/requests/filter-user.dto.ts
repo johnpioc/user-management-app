@@ -1,0 +1,24 @@
+import { IsString, IsInt } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class FilterUserDto {
+  @IsString()
+  startDate: string;
+
+  @IsString()
+  endDate: string;
+
+  @Type(() => Number)
+  @IsInt()
+  pageLimit: number;
+
+  @Type(() => Number)
+  @IsInt()
+  pageNumber: number;
+
+  @IsString()
+  status: string;
+
+  @IsString()
+  nameContainsChars: string;
+}
