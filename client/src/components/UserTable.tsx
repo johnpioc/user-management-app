@@ -6,15 +6,19 @@ import { useAppContext } from "./AppContext";
 type UserTableProps = {
     setUserBarOpen: Dispatch<SetStateAction<boolean>>;
 }
+
+/** Displays table of users with respect to page limit and current page number */
 export default function UserTable({ setUserBarOpen }: UserTableProps) {
     const { setMode, setUser, users, setUsers, filter } = useAppContext();
 
+    /** Helper function that opens the user bar based on the user selected */
     const handleSelectUser = (user: User): void => {
         setUserBarOpen(true);
         setMode("VIEW");
         setUser(user)
     }
 
+    /** Fetches users based on the current filter, re-runs everytime filter is changed */
     useEffect(() => {
         const fetchUsers = async (): Promise<void> => {
             const res: Response<User[]> = await getUsers(filter);

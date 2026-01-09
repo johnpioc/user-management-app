@@ -9,16 +9,21 @@ type FilterBarProps = {
     setFilterBarOpen: Dispatch<SetStateAction<boolean>>;
 };
 
+/** Side tab where user can configure filters */
 export default function FilterBar({ filterBarOpen, setFilterBarOpen }: FilterBarProps) {
     const { filter, setFilter } = useAppContext();
-    const [newFilter, setNewFilter] = useState<Filter>(filter);
-    console.log(newFilter);
 
+    /** New filter to take place of the current filter */
+    const [newFilter, setNewFilter] = useState<Filter>(filter);
+
+    /** Helper function that saves the new filter. Re-retrieves users via useEffect */
     const handleSaveFilter = (): void => {
         setFilter(newFilter);
         setFilterBarOpen(false);
     }
 
+    /** 
+     * Helper function that resets the filter to default settings. Re-retrives users via useEffect */
     const handleResetFilter = (): void => {
         setFilter(getEmptyFilter());
         setNewFilter(getEmptyFilter());

@@ -8,7 +8,10 @@ import { useState } from "react";
 import FilterBar from "./components/FilterBar";
 
 export default function App() {
+    /** Boolean state that represents if user bar is open or closed */
     const [userBarOpen, setUserBarOpen] = useState<boolean>(false);
+
+    /** Boolean state that represents if filter bar is open or closed */
     const [filterBarOpen, setFilterBarOpen] = useState<boolean>(false);
 
     return (

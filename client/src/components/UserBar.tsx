@@ -13,19 +13,26 @@ type UserBarProps = {
     setUserBarOpen: Dispatch<SetStateAction<boolean>>;
 }
 
+/** Side tab that lets the user add, edit, view or delete a user */
 export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) {
     const { setUser, setMode, user, mode, setUsers, filter } = useAppContext();
+
+    /** Current error message to be displayed on screen */
     const [errorMsg, setErrorMsg] = useState<string>("");
 
+    /** Helper function that edits the current user in focus */
     const handleSetUserState = (key: string, value: any): void => {
         setUser((user: User) => {
             return { ...user, [key]: value};
         })
     };
 
+    /** Helper function that adds a user and performs error handling */
     const handleAddUser = async (): Promise<void> => {
+        // Return if form constraints are violated
         if (!validateForm()) return;
 
+        // Send a post request to add a new user and retrieve updated list of users
         const res: Response<User[]> = await createUser({
             name: user.name,
             status: user.status,
@@ -34,6 +41,7 @@ export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) 
             deleted_at: EPOCH_ISO
         }, filter);
 
+        // Display error message if post request fails
         if (res.errorMsg != "") {
             setErrorMsg(res.errorMsg);
             return;
@@ -42,14 +50,21 @@ export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) 
         setErrorMsg("");
         setUsers(res.data);
 
+        // Sets the mode to view and gives the user a notification that user has been successfully 
+        // added
         setMode("VIEW");
         toast(`${user.name} has been added successfully`);
     }
 
+    /** Helper function that updates a current user and performs error handling */
     const handleUpdateUser = async (): Promise<void> => {
+        // Return if form constraints are violated
         if (!validateForm()) return;
 
+        // Send a patch request to add a new user and retrieve updated list of users
         const res: Response<User[]> = await updateUser(user, filter);
+
+        // Display error message if patch request fails
         if (res.errorMsg != "") {
             setErrorMsg(res.errorMsg);
             return;
@@ -57,23 +72,33 @@ export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) 
 
         setUsers(res.data);
 
+        // Sets the mode to view and gives the user a notification that user has been successfully
+        // updated
         setMode("VIEW");
         toast(`${user.name} has been updated successfully!`);
     }
 
+    /** Helper function that deletes a current user and performs error handling */
     const handleDeleteUser = async (id: number): Promise<void> => {
+        // Sends a delete request to (soft) delete a user and retrieves an updated list of users
         const res: Response<User[]> = await deleteUser(id, filter);
+
+        // Displays error message if delete request fails
         if (res.errorMsg != "") {
             setErrorMsg(res.errorMsg);
             return;
         }
 
+        // Update list of users, close the user bar and notify the user that deletion is successful
         setUsers(res.data);
-        setUserBarOpen(false);
-        
+        setUserBarOpen(false); 
         toast("User deleted successfully");
     }
 
+    /** 
+     * Helper function that validates the user form and returns true if form satisfies constraints,
+     * false other
+     */
     const validateForm = (): boolean => {
         // Check that name has a [2,100] characters
         if (user.name.length < 2 || user.name.length > 100) {

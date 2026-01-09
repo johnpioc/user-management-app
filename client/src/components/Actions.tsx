@@ -5,11 +5,11 @@ import { IoFilter } from "react-icons/io5";
 import { useAppContext } from './AppContext';
 import { Filter } from '../types';
 
-type ActionsProps = {
-    setUserBarOpen: Dispatch<SetStateAction<boolean>>;
-    setFilterBarOpen: Dispatch<SetStateAction<boolean>>;
-}
-
+/**
+ * Helper function that checks whether a given filter object matches the default filter
+ * @param filter filter object to check
+ * @returns true if given filter matches default settings, false otherwise
+ */
 const isEmptyFilter = (filter: Filter): boolean => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -22,10 +22,19 @@ const isEmptyFilter = (filter: Filter): boolean => {
     && filter.pageLimit == 10;
 }
 
+type ActionsProps = {
+    setUserBarOpen: Dispatch<SetStateAction<boolean>>;
+    setFilterBarOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+/** Provides different actions for the user to initiate: search, filter and add user */
 export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsProps) {
     const { setMode, setUser, filter, setFilter } = useAppContext();
+
+    /** Stores the text typed into the search bar */
     const [searchText, setSearchText] = useState<string>("");
 
+    /** Helper function that opens a side tab to add a new user */
     const handleClickAddUser = () => {
         setUserBarOpen(true);
         setMode("ADD");
@@ -38,6 +47,10 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
         })
     };
 
+    /** 
+     * Helper function that saves the text in the search bar as a filter that only retrieves 
+     * names that contain the given text
+     */
     const handlePressEnter = (e) => {
         if (e.key == "Enter") {
             setFilter(filter => {
@@ -71,6 +84,7 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
                     <IoFilter className="text-3xl" />
                 </button>
             </div>
+
             {/* ADD USER BUTTON */}
             <button className="rounded-full flex justify-center items-center space-x-2 bg-sky-600
                 text-white px-4 py-1 cursor-pointer relative z-2 shadow-xl" 

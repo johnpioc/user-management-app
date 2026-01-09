@@ -1,5 +1,6 @@
 import { Filter } from "./types";
 
+/** Predefined roles */
 export const roles: string[] = [
     "Software Engineer",
     "Business Analyst",
@@ -8,12 +9,14 @@ export const roles: string[] = [
     "Product Owner"
 ];
 
+/** User status options */
 export const statuses: string[] = [
     "ACTIVE",
     "INACTIVE",
     "SUSPENDED",
 ]
 
+/** Helper function that returns a filter object with default settings */
 export const getEmptyFilter = (): Filter => {
     const today = new Date();
     const tomorrow = new Date(today);
