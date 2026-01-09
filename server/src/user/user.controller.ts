@@ -1,19 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Prisma } from 'generated/prisma/client';
+import FilterDTO from 'src/dto/filter.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('/create')
   create(@Body() createUserDto: Prisma.UserCreateInput) {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Post()
+  find(@Body() filterDto: FilterDTO) {
+    return this.userService.find(filterDto);
+  }
+
+  @Post('/count')
+  count(@Body() filterDto: FilterDTO) {
+    return this.userService.count(filterDto);
   }
 
   @Get(':id')

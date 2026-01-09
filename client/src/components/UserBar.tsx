@@ -1,56 +1,107 @@
 import { roles, statuses } from "../constants";
 import { FaAngleRight } from "react-icons/fa";
-import { createUser, deleteUser } from "../api/api";
+import { createUser, deleteUser, updateUser } from "../api/api";
 import { useAppContext } from "./AppContext";
-import { User } from "../types";
+import { User, Response } from "../types";
+import { useState, Dispatch, SetStateAction } from "react";
+import { toast } from "react-toastify";
 
 const EPOCH_ISO = "1970-01-01T00:00:00.000Z";
 
-export default function UserBar() {
-    const { setUser, setMode, user, setOpen, open, mode, setUsers, users } = useAppContext();
+type UserBarProps = {
+    userBarOpen: boolean;
+    setUserBarOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) {
+    const { setUser, setMode, user, mode, setUsers, filter } = useAppContext();
+    const [errorMsg, setErrorMsg] = useState<string>("");
 
     const handleSetUserState = (key: string, value: any): void => {
-        setUser(user => {
+        setUser((user: User) => {
             return { ...user, [key]: value};
         })
     };
 
     const handleAddUser = async (): Promise<void> => {
-        const addedUser: User = await createUser({
+        if (!validateForm()) return;
+
+        const res: Response<User[]> = await createUser({
             name: user.name,
             status: user.status,
             role: user.role,
             email: user.email,
             deleted_at: EPOCH_ISO
-        });
+        }, filter);
 
-        setUser(addedUser);
-        const newUsers: User[] = users;
-        newUsers.push(addedUser);
-        setUsers(newUsers);
+        if (res.errorMsg != "") {
+            setErrorMsg(res.errorMsg);
+            return;
+        }
+
+        setErrorMsg("");
+        setUsers(res.data);
 
         setMode("VIEW");
+        toast(`${user.name} has been added successfully`);
+    }
+
+    const handleUpdateUser = async (): Promise<void> => {
+        if (!validateForm()) return;
+
+        const res: Response<User[]> = await updateUser(user, filter);
+        if (res.errorMsg != "") {
+            setErrorMsg(res.errorMsg);
+            return;
+        }
+
+        setUsers(res.data);
+
+        setMode("VIEW");
+        toast(`${user.name} has been updated successfully!`);
     }
 
     const handleDeleteUser = async (id: number): Promise<void> => {
-        await deleteUser(id);
-        const stringId = id.toString();
-        const updatedUsers: User[] = users.filter((user: User) => user.id != stringId);
-        setUsers(updatedUsers);
-        setOpen(false);
+        const res: Response<User[]> = await deleteUser(id, filter);
+        if (res.errorMsg != "") {
+            setErrorMsg(res.errorMsg);
+            return;
+        }
+
+        setUsers(res.data);
+        setUserBarOpen(false);
+        
+        toast("User deleted successfully");
+    }
+
+    const validateForm = (): boolean => {
+        // Check that name has a [2,100] characters
+        if (user.name.length < 2 || user.name.length > 100) {
+            setErrorMsg("Name must be between 2 and 100 characters");
+            return false;
+        };
+
+        // Check that email is a valid format
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(user.email)) {
+            setErrorMsg("Email must be a valid format");
+            return false;
+        };
+
+        return true;
     }
 
     return (
         <section className={`h-screen w-screen transition-all ease-in-out duration-400 absolute
             top-0 left-0
-            ${open ? 'bg-[rgba(0,0,0,0.4)] z-3' : 'bg-none z-1'}`}>
+            ${userBarOpen ? 'bg-[rgba(0,0,0,0.4)] z-3' : 'bg-none z-1'}`}>
                 <div className={`w-xl h-screen transition-all ease-in-out duration-400 absolute 
-                    z-4 top-0 ${open ? "right-0" : "-right-152"} flex`}>
+                    z-4 top-0 ${userBarOpen ? "right-0" : "-right-152"} flex`}>
                     {/* EXIT BUTTON */}
                     <div className="h-full w-8 flex justify-center items-center">
                             <button className={`bg-sky-600 w-full h-40 text-white text-4xl 
                                 rounded-tl-xl rounded-bl-xl cursor-pointer`} 
-                                onClick={() => setOpen(false)}>
+                                onClick={() => { setErrorMsg(""); setUserBarOpen(false) }}>
                                 <FaAngleRight />
                             </button>
                     </div>
@@ -113,13 +164,17 @@ export default function UserBar() {
                                 </select>
                             )}
 
+                            {/** ERROR MESSAGE */}
+                            <p className="mt-8 text-red-500 text-center w-full">{errorMsg}</p>
+
                             {/* ACTIONS */}
                             <div className="flex justify-center items-center w-full space-x-4 mt-8">
                                 {/* SUBMIT/SAVE BUTTON */}
                                 {mode != "VIEW" && (
                                     <button className="bg-sky-600 rounded-md px-8 py-2
                                         text-white font-bold cursor-pointer"
-                                        onClick={() => handleAddUser()}>
+                                        onClick={mode == "EDIT" ? () => handleUpdateUser() : 
+                                            () => handleAddUser()}>
                                         {mode == "EDIT" ? "SAVE" : "SUBMIT"}
                                     </button>
                                 )}

@@ -1,7 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from 'generated/prisma/client';
 import { DatabaseService } from 'src/database/database.service';
+import FilterDTO from 'src/dto/filter.dto';
 
+type Status = "ACTIVE" | "INACTIVE" | "SUSPENDED";
+
+const getStatus = (statusString: string): Status | undefined => {
+  switch(statusString) {
+    case "ACTIVE": return "ACTIVE";
+    case "INACIVE": return "INACTIVE";
+    case "SUSPENDED": return "SUSPENDED";
+    default: return undefined;
+  };
+}
 @Injectable()
 export class UserService {
   constructor(private readonly databaseService: DatabaseService) {}
@@ -10,8 +21,45 @@ export class UserService {
     return this.databaseService.user.create({ data: createUserDto });
   }
 
-  async findAll() {
-    return this.databaseService.user.findMany({})
+  async find(filterDto: FilterDTO) {
+    const startDate: Date = new Date(filterDto.startDate);
+    const endDate: Date = new Date(filterDto.endDate);
+    const skipAmount: number = (filterDto.pageNumber - 1) * filterDto.pageLimit;
+
+    return this.databaseService.user.findMany({
+      take: filterDto.pageLimit,
+      skip: skipAmount,
+      where: {
+        created_at: {
+          gte: startDate,
+          lte: endDate
+        },
+        status: {
+          equals: getStatus(filterDto.status)
+        }
+      },
+      orderBy: {
+        created_at: "desc"
+      }
+    })
+  }
+
+  async count(filterDto: FilterDTO) {
+    console.log(filterDto)
+    const startDate: Date = new Date(filterDto.startDate);
+    const endDate: Date = new Date(filterDto.endDate);
+
+    return this.databaseService.user.count({
+      where: {
+        created_at: {
+          gte: startDate,
+          lte: endDate
+        },
+        status: {
+          equals: getStatus(filterDto.status)
+        }
+      },  
+    });
   }
 
   async findOne(id: number) {

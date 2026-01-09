@@ -1,24 +1,22 @@
 import { useState, useContext, createContext, Dispatch, SetStateAction } from "react";
-import { Mode, User } from "../types";
+import { Mode, User, Filter } from "../types";
+import { getEmptyFilter } from "../constants";
 
 const AppContext = createContext(null);
 export const useAppContext = () => useContext(AppContext);
 
 type ContextTypes = {
-    open: boolean;
-    setOpen: Dispatch<SetStateAction<boolean>>;
     mode: Mode;
     setMode: Dispatch<SetStateAction<Mode>>;
     users: User[],
     setUsers: Dispatch<SetStateAction<User[]>>;
     user: User,
     setUser: Dispatch<SetStateAction<User>>;
-    pageIndex: number,
-    setPageIndex: Dispatch<SetStateAction<number>>;
+    filter: Filter
+    setFilter: Dispatch<SetStateAction<Filter>>;
 };
 
 export function AppProvider({ children }) {
-    const [open, setOpen] = useState<boolean>(false);
     const [mode, setMode] = useState<Mode>("VIEW");
     const [users, setUsers] = useState<User[]>([]);
     const [user, setUser] = useState<User>({
@@ -28,19 +26,17 @@ export function AppProvider({ children }) {
         email: "",
         deleted_at: ""
     });
-    const [pageIndex, setPageIndex] = useState<number>(0);
+    const [filter, setFilter] = useState<Filter>(getEmptyFilter());
 
     const context: ContextTypes = {
-        open,
-        setOpen,
         mode,
         setMode,
         users,
         setUsers,
         user,
         setUser,
-        pageIndex,
-        setPageIndex
+        filter,
+        setFilter
     };
 
     return (

@@ -1,31 +1,28 @@
 import { getUsers } from "../api/api";
-import { User } from "../types";
-import { useState, useEffect } from "react";
+import { User, Response } from "../types";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useAppContext } from "./AppContext";
 
-export default function UserTable() {
-    const { setOpen, setMode, setUser, users, setUsers, pageIndex } = useAppContext();
+type UserTableProps = {
+    setUserBarOpen: Dispatch<SetStateAction<boolean>>;
+}
+export default function UserTable({ setUserBarOpen }: UserTableProps) {
+    const { setMode, setUser, users, setUsers, filter } = useAppContext();
 
     const handleSelectUser = (user: User): void => {
-        setOpen(true);
+        setUserBarOpen(true);
         setMode("VIEW");
         setUser(user)
-    }
-    
-    const getPaginatedUsers = (): User[] => {
-        const bottom: number = pageIndex * 10;
-        const top: number = Math.min(users.length, pageIndex * 10 + 10);
-        return users.slice(bottom, top);
     }
 
     useEffect(() => {
         const fetchUsers = async (): Promise<void> => {
-            const usersData: User[] = await getUsers();
-            setUsers(usersData);
+            const res: Response<User[]> = await getUsers(filter);
+            setUsers(res.data);
         }
 
         fetchUsers();
-    }, []);
+    }, [filter]);
 
     return (
         <section className="w-4xl rounded-lg overflow-hidden shadow-xl bg-white relative z-2">
@@ -39,7 +36,7 @@ export default function UserTable() {
                 </div>
 
                 {/* USERS */}
-                {getPaginatedUsers().map((user, index) => (
+                {users.map((user, index) => (
                     <div key={index} className={`grid grid-cols-4 text-black text-md p-2
                         ${index % 2 == 1 ? 'bg-slate-100' : 'bg-white-200'} cursor-pointer`}
                         onClick={() => handleSelectUser(user)}>

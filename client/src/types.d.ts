@@ -15,3 +15,16 @@ export type User = {
     updated_at?: string,
     deleted_at: string
 };
+
+interface Response<T> {
+    data: T;
+    errorMsg: string
+}
+
+export type Filter = {
+    startDate: string,
+    endDate: string,
+    status: Status,
+    pageLimit: number,
+    pageNumber: number
+}
