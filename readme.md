@@ -1,8 +1,8 @@
-# User Management App
+# 👤 User Management App
 
 A basic CRUD application to view and manage users, developed for project-based learning during my internship at [ST United](https://stunited.vn/)
 
-### Project Features
+### 💻 Project Features
 ---
 
 **Backend & Data Engineering**
@@ -21,3 +21,27 @@ A basic CRUD application to view and manage users, developed for project-based l
 
 - **Containerised Orchestration**: standardised development and deployment environments using Docker and Docker Compose to manage the application and PostgreSQL database as isolated services
 - **Database Design**: designed a relational schema with explicit constraints and indexes to ensure high-performance lookups on frequently searched fields like email and status
+
+### 🔨 Setup
+
+Make sure you have docker installed.
+
+The first thing to do is configure `/server/.env.example` by setting a custom `DB_PASSWORD` 
+and renaming the file to `.env`. After, we can then install the dependencies, deploy the 
+postgresql database and run the server by typing the following in the terminal: 
+
+```shell
+cd server
+npm install
+docker-compose up
+npm run start
+```
+
+We can then run the client by typing in the following into a **seperate** terminal:
+
+```shell
+cd client
+npm install
+npm run dev
+```
+
