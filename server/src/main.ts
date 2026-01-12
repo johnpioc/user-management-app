@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes';
 import { BadRequestException } from '@nestjs/common';
 import { GlobalExceptionFilter } from './exceptions/GlobalExceptionFilter';
+import { Response } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,12 +12,14 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ 
     transform: true,
     exceptionFactory: (errors) => {
-      const result = errors.map(error => ({
-        property: error.property,
-        message: error.constraints ? Object.values(error.constraints) 
-          : "error occured, please try again later",
-      }));
-      return new BadRequestException(result);
+      const messages: string[] = errors.map(error => error.constraints 
+        ? Object.values(error.constraints)[0] : "error occured, please try again later");
+
+      return new BadRequestException({
+        statusCode: 400,
+        message: messages,
+        error: 'Bad Request',
+      });
     }
   }));
 

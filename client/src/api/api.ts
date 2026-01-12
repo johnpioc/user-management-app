@@ -5,6 +5,28 @@ import axios from "axios";
 const URL: string = "http://localhost:3001/user";
 
 /**
+ * Helper function that unpacks an error encountered in a try and catch block and returns a 
+ * Response object with the appropriate error code
+ * 
+ * @param error the error object that occured during the try and catch block
+ * @param returnValue 
+ * @returns 
+ */
+const handleError = <T>(error: any, returnValue: T): Response<T> => {
+    let message: string = "";
+    if (axios.isAxiosError(error)) {
+        if (error.response) {
+            message = error.response.data.message;
+        } else {
+            message = error.message;
+        }
+    } else {
+        message = "An unexpected error occured";
+    }
+
+    return { data: returnValue, errorMsg: message };
+}
+/**
  * Retrieves a list of users that satisfy a given filter
  * 
  * @param filter an object that specifies the filter parameters
@@ -20,7 +42,7 @@ export const getUsers = async (filter: Filter): Promise<Response<User[]>> => {
 
         return { errorMsg: "", data: res.data };
     } catch (e) {
-        return { errorMsg: "Unable to process users, please try again later", data: [] };
+        return handleError<User[]>(e, []);
     }
 }
 
@@ -40,7 +62,7 @@ export const getTotalUserCount = async(filter: Filter): Promise<Response<number>
 
         return { errorMsg: "", data: res.data };
     } catch (e) {
-        return { errorMsg: "Unable to get user count, please try again later", data: 0 };
+        return handleError<number>(e, 0);
     }
 }
 
@@ -61,10 +83,7 @@ export const createUser = async (newUser: User, filter: Filter): Promise<Respons
         
         return getUsers(filter);
     } catch (e) {
-        return { 
-            errorMsg: "Unable to add user, please make sure email is unique", 
-            data: []
-        };
+        return handleError<User[]>(e, []); 
     }
     
 }
@@ -87,10 +106,7 @@ export const updateUser = async (updatedUser: User, filter: Filter): Promise<Res
         return getUsers(filter);
 
     } catch (e) {
-        return { 
-            errorMsg: "Unable to update user, please make sure email is unique",
-            data: []
-        };
+        return handleError<User[]>(e, []);
     }
 }
 
@@ -111,9 +127,6 @@ export const deleteUser = async (id: number, filter: Filter): Promise<Response<U
         return getUsers(filter);
 
     } catch (e) {
-        return {
-            errorMsg: "Failed to delete user, please try again later",
-            data: []
-        }
+        return handleError<User[]>(e, []);
     }
 }
