@@ -1,39 +1,39 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Prisma } from 'generated/prisma/client';
+import { UserRequestDTO, UserResponseDTO } from 'src/dto/user.dto';
 import FilterDTO from 'src/dto/filter.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('/create')
-  create(@Body() createUserDto: Prisma.UserCreateInput) {
+  create(@Body() createUserDto: UserRequestDTO): Promise<UserResponseDTO> {
     return this.userService.create(createUserDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
-  find(@Body() filterDto: FilterDTO) {
+  find(@Body() filterDto: FilterDTO): Promise<UserResponseDTO[]> {
     return this.userService.find(filterDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('/count')
-  count(@Body() filterDto: FilterDTO) {
+  count(@Body() filterDto: FilterDTO): Promise<number> {
     return this.userService.count(filterDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: Prisma.UserUpdateInput) {
+  update(@Param('id') id: string, @Body() updateUserDto: UserRequestDTO): Promise<boolean> {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): Promise<boolean> {
     return this.userService.remove(+id);
   }
 }

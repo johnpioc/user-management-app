@@ -22,8 +22,7 @@ export default function App() {
             <PageSelect />
 
             <UserBar userBarOpen={userBarOpen} setUserBarOpen={setUserBarOpen}/>
-            <FilterBar filterBarOpen={filterBarOpen} 
-                setFilterBarOpen={setFilterBarOpen} />
+            <FilterBar filterBarOpen={filterBarOpen} setFilterBarOpen={setFilterBarOpen} />
             <ToastContainer />
         </div>
     );

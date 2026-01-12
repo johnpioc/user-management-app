@@ -50,9 +50,7 @@ export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) 
         setErrorMsg("");
         setUsers(res.data);
 
-        // Sets the mode to view and gives the user a notification that user has been successfully 
-        // added
-        setMode("VIEW");
+        setUserBarOpen(false);
         toast(`${user.name} has been added successfully`);
     }
 
@@ -71,10 +69,7 @@ export default function UserBar({ userBarOpen, setUserBarOpen } : UserBarProps) 
         }
 
         setUsers(res.data);
-
-        // Sets the mode to view and gives the user a notification that user has been successfully
-        // updated
-        setMode("VIEW");
+        setUserBarOpen(false);
         toast(`${user.name} has been updated successfully!`);
     }
 
