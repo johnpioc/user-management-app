@@ -54,7 +54,7 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
     const handlePressEnter = (e) => {
         if (e.key == "Enter") {
             setFilter(filter => {
-                return { ...filter, nameContainsChars: searchText }
+                return { ...filter, nameContainsChars: searchText, pageNumber: 1 }
             });
         }
     }
