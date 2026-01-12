@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Delete, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRequestDTO, UserResponseDTO } from 'src/dto/user.dto';
 import FilterDTO from 'src/dto/filter.dto';

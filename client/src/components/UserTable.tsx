@@ -1,6 +1,6 @@
 import { getUsers } from "../api/api";
 import { User, Response } from "../types";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useEffect, Dispatch, SetStateAction } from "react";
 import { useAppContext } from "./AppContext";
 
 type UserTableProps = {
