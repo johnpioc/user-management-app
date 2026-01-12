@@ -23,6 +23,7 @@ A basic CRUD application to view and manage users, developed for project-based l
 - **Database Design**: designed a relational schema with explicit constraints and indexes to ensure high-performance lookups on frequently searched fields like email and status
 
 ### 🔨 Setup
+---
 
 Make sure you have docker installed.
 

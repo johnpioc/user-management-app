@@ -1,9 +1,10 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa'
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { IoFilter } from "react-icons/io5";
 import { useAppContext } from './AppContext';
 import { Filter } from '../types';
+import useDebounce from '../hooks/useDebounce';
 
 /**
  * Helper function that checks whether a given filter object matches the default filter
@@ -34,6 +35,8 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
     /** Stores the text typed into the search bar */
     const [searchText, setSearchText] = useState<string>("");
 
+    const debouncedSearchText = useDebounce<string>(searchText, 500);
+
     /** Helper function that opens a side tab to add a new user */
     const handleClickAddUser = () => {
         setUserBarOpen(true);
@@ -47,17 +50,13 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
         })
     };
 
-    /** 
-     * Helper function that saves the text in the search bar as a filter that only retrieves 
-     * names that contain the given text
-     */
-    const handlePressEnter = (e) => {
-        if (e.key == "Enter") {
-            setFilter(filter => {
-                return { ...filter, nameContainsChars: searchText, pageNumber: 1 }
-            });
-        }
-    }
+    useEffect(() => {
+        setFilter((filter: Filter) => { return {
+            ...filter,
+            pageNumber: 1,
+            nameContainsChars: debouncedSearchText
+        }});
+    }, [debouncedSearchText]);
 
     return (
         <section className="w-full lg:w-4xl flex flex-col lg:flex-row space-y-4 lg:space-y-0
@@ -70,13 +69,8 @@ export default function Actions({ setUserBarOpen, setFilterBarOpen }: ActionsPro
                     border-slate-400 p-2 shadow-xl relative z-2">
                         <FaMagnifyingGlass className="text-slate-400"/>
                         <input type="text" className="w-full focus:outline-none focus:ring-0" 
-                        placeholder="Search for a user..." onKeyDown={e => handlePressEnter(e)}
+                        placeholder="Search for a user..." 
                         value={searchText} onChange={e => setSearchText(e.target.value)}/>
-                        <button className={`bg-sky-600 overflow-hidden rounded-md text-sm
-                            text-white ${searchText != filter.nameContainsChars ? 'w-20' : 
-                            'w-0'} transition-all duration-200 ease-in-out text-center`}>
-                                Apply
-                        </button>
                 </div>
 
                 {/* FILTER BUTTON */}
